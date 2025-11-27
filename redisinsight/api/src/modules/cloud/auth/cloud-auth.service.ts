@@ -222,6 +222,8 @@ export class CloudAuthService {
 
     const tokens = await this.exchangeCode(authRequest, query.code);
 
+    this.logger.error('callback:tokens', tokens);
+
     await this.sessionService.updateSessionData(
       authRequest.sessionMetadata.sessionId,
       {
@@ -343,6 +345,8 @@ export class CloudAuthService {
           headers: CloudAuthService.getOAuthHttpRequestHeaders(),
         },
       );
+
+      this.logger.error('renewTokens:data', data);
 
       await this.sessionService.updateSessionData(sessionMetadata.sessionId, {
         accessToken: data.access_token,
