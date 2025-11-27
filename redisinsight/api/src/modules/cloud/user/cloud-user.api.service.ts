@@ -171,21 +171,15 @@ export class CloudUserApiService {
         sessionMetadata.sessionId,
       );
 
-      this.logger.log('session', session);
-
       const existingUser = await this.repository.get(sessionMetadata.sessionId);
 
       if (existingUser?.id && !force) {
         return;
       }
 
-      this.logger.log('existingUser', existingUser);
-
       this.logger.debug('Trying to sync user profile', sessionMetadata);
 
       const userData = await this.api.getCurrentUser(session);
-
-      this.logger.log('userData', userData);
 
       const user: CloudUser = {
         id: +userData.id,
@@ -194,8 +188,6 @@ export class CloudUserApiService {
       };
 
       const accounts = await this.api.getAccounts(session);
-
-      this.logger.log('accounts', accounts);
 
       // todo: remember existing CApi key?
       user.accounts = accounts.map((account) => ({

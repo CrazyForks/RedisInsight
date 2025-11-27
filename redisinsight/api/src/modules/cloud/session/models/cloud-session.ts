@@ -10,6 +10,9 @@ export class CloudSession {
   refreshToken?: string;
 
   @Expose()
+  idToken?: string; // sm id token returned from oauth flow (e.g. okta)
+
+  @Expose()
   idpType?: CloudAuthIdpType;
 
   @Expose()
