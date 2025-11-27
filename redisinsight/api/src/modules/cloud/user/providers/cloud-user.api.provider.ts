@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ICloudApiAccount, ICloudApiUser } from 'src/modules/cloud/user/models';
 import { wrapCloudApiError } from 'src/modules/cloud/common/exceptions';
 import {
@@ -10,6 +10,8 @@ import { CloudApiProvider } from 'src/modules/cloud/common/providers/cloud.api.p
 
 @Injectable()
 export class CloudUserApiProvider extends CloudApiProvider {
+  private readonly logger = new Logger('CloudUserApiProvider');
+
   /**
    * Login user to api using accessToken from oauth flow
    * returns JSESSIONID
@@ -41,6 +43,8 @@ export class CloudUserApiProvider extends CloudApiProvider {
     utm?: CloudRequestUtm,
   ): Promise<string> {
     try {
+      this.logger.error('Login request credentials:', credentials);
+
       const { headers } = await this.api.post(
         'login',
         {
@@ -56,6 +60,7 @@ export class CloudUserApiProvider extends CloudApiProvider {
         .find((header) => header.indexOf('JSESSIONID=') > -1)
         ?.match(/JSESSIONID=([^;]+)/)?.[1];
     } catch (e) {
+      this.logger.error('Login request failed:', e.response?.data || e.message);
       throw wrapCloudApiError(e);
     }
   }

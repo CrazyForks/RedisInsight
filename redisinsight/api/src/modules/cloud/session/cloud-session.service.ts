@@ -24,6 +24,7 @@ export class CloudSessionService {
           return {
             ...cloud,
             refreshToken: data.refreshToken,
+            idToken: data.idToken,
             idpType: data.idpType,
           };
         }
@@ -56,6 +57,7 @@ export class CloudSessionService {
         this.cloudSessionRepository.save({
           data: {
             refreshToken: cloud.refreshToken,
+            idToken: cloud.idToken,
             idpType: cloud.idpType,
           },
         });
