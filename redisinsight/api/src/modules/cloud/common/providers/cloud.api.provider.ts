@@ -75,7 +75,7 @@ export class CloudApiProvider {
     }
 
     if (credentials?.idToken) {
-      headers['Sm-Id-Token'] = credentials.idToken;
+      headers['SM-Id-Token'] = credentials.idToken;
     }
 
     return {
