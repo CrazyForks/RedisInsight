@@ -155,8 +155,6 @@ export class CloudAuthService {
         },
       );
 
-      this.logger.error('exchangeCode:data', data);
-
       return data;
     } catch (e) {
       this.logger.error('Unable to exchange code', e);
@@ -222,7 +220,15 @@ export class CloudAuthService {
 
     const tokens = await this.exchangeCode(authRequest, query.code);
 
-    this.logger.error('callback:tokens', tokens);
+    const sessionData = {
+      accessToken: tokens.access_token,
+      refreshToken: tokens.refresh_token,
+      idpType: authRequest.idpType,
+    };
+
+    if (authRequest.idpType === 'sso') {
+      sessionData['idToken'] = tokens.id_token;
+    }
 
     await this.sessionService.updateSessionData(
       authRequest.sessionMetadata.sessionId,
@@ -346,7 +352,17 @@ export class CloudAuthService {
         },
       );
 
-      this.logger.error('renewTokens:data', data);
+      const sessionData = {
+        accessToken: data.access_token,
+        refreshToken: data.refresh_token,
+        idpType,
+        csrf: null,
+        apiSessionId: null,
+      };
+
+      if (idpType === 'sso') {
+        sessionData['idToken'] = data.id_token;
+      }
 
       await this.sessionService.updateSessionData(sessionMetadata.sessionId, {
         accessToken: data.access_token,

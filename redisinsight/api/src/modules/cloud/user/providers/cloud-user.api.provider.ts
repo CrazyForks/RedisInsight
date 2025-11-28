@@ -41,6 +41,11 @@ export class CloudUserApiProvider extends CloudApiProvider {
     utm?: CloudRequestUtm,
   ): Promise<string> {
     try {
+      const requestHeaders = CloudApiProvider.getHeaders(credentials);
+      if (credentials?.idpType === 'sso') {
+        requestHeaders.headers['SM-Id-Token'] = credentials.idToken;
+      }
+
       const { headers } = await this.api.post(
         'login',
         {
@@ -48,7 +53,7 @@ export class CloudUserApiProvider extends CloudApiProvider {
           auth_mode: credentials?.idpType,
         },
         {
-          ...CloudApiProvider.getHeaders(credentials),
+          ...requestHeaders,
         },
       );
 

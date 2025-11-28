@@ -21,12 +21,17 @@ export class CloudSessionService {
         if (cloudSessionData?.data) {
           const { data } = cloudSessionData;
 
-          return {
+          const sessionData = {
             ...cloud,
             refreshToken: data.refreshToken,
-            idToken: data.idToken,
             idpType: data.idpType,
           };
+
+          if (data.idpType === 'sso') {
+            sessionData['idToken'] = data.idToken;
+          }
+
+          return sessionData;
         }
       } catch (e) {
         // ignore
@@ -54,12 +59,17 @@ export class CloudSessionService {
 
     if (cloudSession && cloud?.refreshToken && cloud?.idpType) {
       try {
+        const data = {
+          refreshToken: cloud.refreshToken,
+          idpType: cloud.idpType,
+        };
+
+        if (cloud.idpType === 'sso') {
+          data['idToken'] = cloud.idToken;
+        }
+
         this.cloudSessionRepository.save({
-          data: {
-            refreshToken: cloud.refreshToken,
-            idToken: cloud.idToken,
-            idpType: cloud.idpType,
-          },
+          data,
         });
       } catch (e) {
         // ignore

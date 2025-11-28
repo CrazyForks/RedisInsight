@@ -75,8 +75,6 @@ export class CloudUserApiService {
         sessionMetadata.sessionId,
       );
 
-      this.logger.error('session', session);
-
       if (!isValidToken(session?.accessToken)) {
         if (!session?.refreshToken) {
           this.logger.error('Refresh token is undefined');
