@@ -22,7 +22,7 @@ jobs:
         uses: actions/upload-artifact/merge@v4
         with:
           name: 'all-builds'
-          pattern: '*-builds'
+          pattern: '*-builds*'
           delete-merged: true
 
       - name: Download builds
